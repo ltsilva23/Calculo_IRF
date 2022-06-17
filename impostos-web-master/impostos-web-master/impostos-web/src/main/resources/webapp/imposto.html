@@ -1,0 +1,99 @@
+<html>
+
+<head>
+
+<title>Imposto de Renda - Mensal</title>
+
+<script type="text/javascript">
+	function realizarCalculo() {
+		const VALOR_POR_DEPENDENTE = 189.59;
+		const ALIQUOTA_1 = 0.075;
+		const ALIQUOTA_2 = 0.150;
+		const ALIQUOTA_3 = 0.225;
+		const ALIQUOTA_4 = 0.275;
+		const FAIXA_1_TOPO = 1903.98;
+		const FAIXA_2_TOPO = 2826.65;
+		const FAIXA_3_TOPO = 3751.05;
+		const FAIXA_4_TOPO = 4664.68;
+
+		var valorDependentes = quantidadeDependentes.value * VALOR_POR_DEPENDENTE;
+		var baseCalculo = rendimentosTributaveis.value - previdenciaOficial.value - valorDependentes;
+		var baseCalculoFaixa;
+
+		var ir = 0.00;
+		if (baseCalculo > FAIXA_4_TOPO) {
+			baseCalculoFaixa = baseCalculo - FAIXA_4_TOPO;
+			ir = ir + baseCalculoFaixa * ALIQUOTA_4;
+			baseCalculo = FAIXA_4_TOPO;
+		}
+		if (baseCalculo > FAIXA_3_TOPO) {
+			baseCalculoFaixa = baseCalculo - FAIXA_3_TOPO;
+			ir = ir + baseCalculoFaixa * ALIQUOTA_3;
+			baseCalculo = FAIXA_3_TOPO;
+		}
+		if (baseCalculo > FAIXA_2_TOPO) {
+			baseCalculoFaixa = baseCalculo - FAIXA_2_TOPO;
+			ir = ir + baseCalculoFaixa * ALIQUOTA_2;
+			baseCalculo = FAIXA_2_TOPO;
+		}
+		if (baseCalculo > FAIXA_1_TOPO) {
+			baseCalculoFaixa = baseCalculo - FAIXA_1_TOPO;
+			ir = ir + baseCalculoFaixa * ALIQUOTA_1;
+		}
+		
+		impostoPagar.value = Math.trunc(ir * 100)/100;
+		aliquotaEfetiva.value = Math.trunc(ir / rendimentosTributaveis.value * 10000)/100 + "%";
+	}
+	function habilitarCampos() {
+		if (isInformarDeducoes.checked) {
+			previdenciaOficial.disabled = false;
+			quantidadeDependentes.disabled = false;
+		} else {
+			previdenciaOficial.disabled = true;
+			quantidadeDependentes.disabled = true;
+			previdenciaOficial.value = "0.00";
+			quantidadeDependentes.value = "0";
+		}
+	}
+</script>
+
+</head>
+<body>
+	<form>
+
+		<table border=1>
+			<tr>
+				<td>Rendimentos tributáveis:</td>
+				<td><input id="rendimentosTributaveis" value="0.00" /></td>
+			</tr>
+			<tr>
+				<td colspan="2" style="text-align: center"><input
+					id="isInformarDeducoes" type="checkbox"
+					onChange="habilitarCampos()" /> <label for="isInformarDeducoes">Informar
+						deduções</label></td>
+			</tr>
+			<tr>
+				<td>Previdência oficial:</td>
+				<td><input id="previdenciaOficial" value="0.00" disabled /></td>
+			</tr>
+			<tr>
+				<td>Quantidade de dependentes:</td>
+				<td><input id="quantidadeDependentes" value="0" disabled /></td>
+			</tr>
+			<tr>
+				<td colspan="2"><input id="calculoBtn" type="button"
+					value="Calcular" style="width: 100%" onClick="realizarCalculo();" /></td>
+			</tr>
+			<tr>
+				<td>Imposto a pagar:</td>
+				<td><input id="impostoPagar" disabled /></td>
+			</tr>
+			<tr>
+				<td>Alíquota efetiva:</td>
+				<td><input id="aliquotaEfetiva" disabled /></td>
+			</tr>
+		</table>
+
+	</form>
+</body>
+</html>
